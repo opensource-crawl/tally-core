@@ -1,0 +1,511 @@
+;; Sri Ganeshji : Sri Balaji : Sri Pitreshwarji : Sri Durgaji : Sri Venkateshwara
+
+<DefType: Field>
+[Field: CA AccType Name]
+
+	Use     	: Name Field
+	Use     	: DSPAccNameTmpl
+	
+	Set as  	: $Name
+	Width   	: If @@CAExportHTMLFormat Then @@MaxNameWidth Else 0
+	Invisible	: ##DSPNameStyle = @@NS_Alias OR ##DSPNameStyle = @@NS_AliasName OR ##DSPNameStyle = @@NS_NameAlias
+
+	Switch  	: AccTypeStyle  : ALGroupAcc        : $$IsGroup
+	Switch  	: AccTypeStyle  : ALLedgerAcc       : $$IsLedger
+	Switch  	: AccTypeStyle  : ALBudgetAcc       : $$IsBudget AND NOT $IsScenario
+	Switch  	: AccTypeStyle  : ALScenarioAcc     : $$IsBudget AND $IsScenario
+	Switch  	: AccTypeStyle  : ALCstCatAcc       : $$IsCostCategory
+	Switch  	: AccTypeStyle  : ALCstCtrAcc       : $$IsCostCentre
+	Switch  	: AccTypeStyle  : ALStkGrpAcc       : $$IsStockGroup
+	Switch  	: AccTypeStyle  : ALTariffClassAcc 	: $$IsTariffClassification
+	Switch  	: AccTypeStyle  : ALGSTClassAcc 	: $$IsGSTClassification
+	Switch  	: AccTypeStyle  : ALStkItemAcc      : $$IsStockItem
+	Switch  	: AccTypeStyle  : ALStkCatAcc       : $$IsStockCategory
+	Switch  	: AccTypeStyle  : ALGodownAcc       : $$IsGodown
+	Switch  	: AccTypeStyle  : ALCurrencyAcc     : $$IsCurrency
+	Switch  	: AccTypeStyle  : ALUnitAcc         : $$IsUnit
+	Switch  	: AccTypeStyle  : ALSerialNumberAcc	: $$IsSerialNumber
+	Switch  	: AccTypeStyle  : ALVchTypeAcc      : $$IsVoucherType
+	Switch  	: AccTypeStyle  : ALAttdTypeAcc     : $$IsAttendanceType
+
+[Field: ATAlias]
+
+	Use         : Name Field
+
+	Set as      : if $$IsUnit OR $$IsCurrency then $FormalName else +
+	              If $$IsBudget Then @BdgtTypeStr Else +
+    	          if NOT $$IsStockItem then $Alias else @StockAlias
+	StockAlias  : if $$IsEmpty:$PartNo then $Alias else $PartNo
+    BdgtTypeStr : If @@BdgtEnabled AND @@ScnEnabled Then $BudgetType Else ""
+    Invisible   : Yes
+    Style       : Normal
+
+[Field: AccType Alias]
+
+    Use     : Name Field
+    Set as  : if $$IsEmpty:#ATAlias then "" else "(" + #ATAlias + ")"
+    Style   : Normal
+
+[Field: CoAAccType Alias]
+
+	Use     	: Name Field
+	Width		: @@MaxNameWidth
+
+	Set as  	: If ##DSPNameStyle = @@NS_Alias Then If $$IsEmpty:#ATAlias Then $Name Else #ATAlias  +
+				  Else If ##DSPNameStyle = @@NS_AliasName AND NOT $$IsEmpty:#ATAlias Then #ATAlias + " (" + $Name + ")"  +
+					   Else If ##DSPNameStyle = @@NS_NameAlias AND NOT $$IsEmpty:#ATAlias +
+								Then $Name + " (" + #ATAlias + ")" +
+							 Else $Name
+	Style   	: Normal
+	Invisible	: ##DSPNameStyle = "" OR ##DSPNameStyle = "Name Only"
+
+	Switch  	: AccTypeStyle  : ALGroupAcc        : $$IsGroup
+	Switch  	: AccTypeStyle  : ALLedgerAcc       : $$IsLedger
+	Switch  	: AccTypeStyle  : ALBudgetAcc       : $$IsBudget
+	Switch  	: AccTypeStyle  : ALCstCatAcc       : $$IsCostCategory
+	Switch  	: AccTypeStyle  : ALCstCtrAcc       : $$IsCostCentre
+	Switch  	: AccTypeStyle  : ALStkGrpAcc       : $$IsStockGroup
+	Switch  	: AccTypeStyle  : ALTariffClassAcc 	: $$IsTariffClassification
+	Switch  	: AccTypeStyle  : ALGSTClassAcc 	: $$IsGSTClassification
+	Switch  	: AccTypeStyle  : ALStkItemAcc      : $$IsStockItem
+	Switch  	: AccTypeStyle  : ALStkCatAcc       : $$IsStockCategory
+	Switch  	: AccTypeStyle  : ALGodownAcc       : $$IsGodown
+	Switch  	: AccTypeStyle  : ALCurrencyAcc     : $$IsCurrency
+	Switch  	: AccTypeStyle  : ALUnitAcc         : $$IsUnit
+	Switch  	: AccTypeStyle  : ALSerialNumberAcc	: $$IsSerialNumber
+	Switch  	: AccTypeStyle  : ALVchTypeAcc      : $$IsVoucherType
+	Switch  	: AccTypeStyle  : ALAttdTypeAcc     : $$IsAttendanceType
+
+[Field: AccType ItemLevelField]
+
+    Use     : Name Field
+    Width   : 0
+ 	Set As  : If ##ShowUnusedMasters Then @@UnusedAccTypeItem Else @@AllAccTypeItem
+	Inactive: If ##ShowUnusedMasters Then $$IsEmpty:$$Number:@@UnusedAccTypeItem  Else $$IsEmpty:$$Number:@@AllAccTypeItem
+
+[Field: AccType Name]
+
+    Use     : Name Field
+	Use     : DSPAccNameTmpl
+
+	Set as  : $Name
+    Width   : 0
+
+	Switch  : AccTypeStyle  : ATGroupAcc        : $$IsGroup
+    Switch  : AccTypeStyle  : ATLedgerAcc       : $$IsLedger
+    Switch  : AccTypeStyle  : ATBudgetAcc       : $$IsBudget
+    Switch  : AccTypeStyle  : ATCstCatAcc       : $$IsCostCategory
+    Switch  : AccTypeStyle  : ATCstCtrAcc       : $$IsCostCentre
+    Switch  : AccTypeStyle  : ATStkGrpAcc       : $$IsStockGroup
+    Switch  : AccTypeStyle  : ATTariffClassAcc 	: $$IsTariffClassification
+	Switch  : AccTypeStyle  : ATGSTClassAcc 	: $$IsGSTClassification
+    Switch  : AccTypeStyle  : ATStkItemAcc      : $$IsStockItem
+    Switch  : AccTypeStyle  : ATStkCatAcc       : $$IsStockCategory
+    Switch  : AccTypeStyle  : ATGodownAcc       : $$IsGodown
+    Switch  : AccTypeStyle  : ATCurrencyAcc     : $$IsCurrency
+    Switch  : AccTypeStyle  : ATUnitAcc         : $$IsUnit
+    Switch  : AccTypeStyle  : ATSerialNumberAcc	: $$IsSerialNumber
+    Switch  : AccTypeStyle  : ATVchTypeAcc      : $$IsVoucherType
+	Switch  : AccTypeStyle  : ATBudgetAcc       : $$IsBudget AND NOT $IsScenario
+	Switch  : AccTypeStyle  : ATScenarioAcc     : $$IsBudget AND $IsScenario
+    Switch  : AccTypeStyle  : ATAttdTypeAcc     : $$IsAttendanceType
+
+    [!Field: ATGroupAcc]
+
+        Style   : "Normal Bold"
+
+    [!Field: ATLedgerAcc]
+
+        Style   : "Normal Italic"
+
+    [!Field: ATBudgetAcc]
+
+	    Style   : If $NumChildren > 0 Then  "Normal Bold Italic" Else "Normal Italic"
+
+	[!Field: ATScenarioAcc]
+
+		Style   : If $NumChildren > 0 Then  "Normal Bold Italic" Else "Normal Italic"
+
+    [!Field: ATCstCatAcc]
+
+        Style   : "Normal Bold"
+
+    [!Field: ATStkGrpAcc]
+
+		Style   : "Normal Bold"
+
+    [!Field: ATTariffClassAcc]
+
+        Style   : "Normal Bold"
+
+    [!Field: ATGSTClassAcc]
+
+        Style   : "Normal Bold"
+
+    [!Field: ATStkItemAcc]
+
+        Style   : "Normal Italic"
+
+    [!Field: ATStkCatAcc]
+
+	    Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+
+    [!Field: ATGodownAcc]
+
+        Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+
+    [!Field: ATCurrencyAcc]
+
+        Style   : if $IsReserved then "Normal Bold" else "Normal"
+
+    [!Field: ATUnitAcc]
+
+        Style   : if $IsSimpleUnit then "Normal Bold" else "Normal"
+
+    [!Field: ATSerialNumberAcc]
+
+        Style   : "Normal Bold"
+
+    [!Field: ATVchTypeAcc]
+
+        Style   : if $IsReserved then "Normal Bold" else "Normal"
+
+    [!Field: ATAttdTypeAcc]
+
+	     Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+
+	[!Field: ATCstCtrAcc]
+
+		Style   : If $NumChildren > 0 Then "Normal Bold  Italic" Else "Normal Italic"
+
+[Field: AccountType]
+
+    Use         : Short Name Field
+    Set as      : ##AccountType
+    Modifies    : AccountType
+    Table       : AccountType               : NOT ($$IsSysNameEqual:SDF:#DSPExportFormat OR $$IsSysNameEqual:XML:#DSPExportFormat)
+    Table       : AccountType, FullAccounts : ($$IsSysNameEqual:SDF:#DSPExportFormat OR $$IsSysNameEqual:XML:#DSPExportFormat)
+    ShowTable   : Always
+    CommonTable : No
+	
+    [!Field: ALGroupAcc]
+
+        Style   : "Normal Bold"
+		Display	: Group
+
+    [!Field: ALLedgerAcc]
+
+        Style   : "Normal Italic"
+		Display	: Ledger
+
+    [!Field: ALBudgetAcc]
+    
+	    Style   : If $NumChildren > 0 Then  "Normal Bold Italic" Else "Normal Italic"
+		Display	: Budget
+
+	[!Field: ALScenarioAcc]
+
+		Style   : If $NumChildren > 0 Then  "Normal Bold Italic" Else "Normal Italic"
+		Display	: Scenario
+
+    [!Field: ALCstCatAcc]
+
+        Style   : "Normal Bold"
+		Display	: CostCategory
+
+    [!Field: ALStkGrpAcc]
+
+		Style   : "Normal Bold"
+		Display	: StockGroup
+		;Display	: Ex Tariff StockGroup Details
+
+    [!Field: ALTariffClassAcc]
+
+        Style   : "Normal Bold"
+		Display	: TariffClassification
+
+    [!Field: ALGSTClassAcc]
+
+        Style   : "Normal Bold"
+		Display	: GSTClassification
+
+    [!Field: ALStkItemAcc]
+
+        Style   : "Normal Italic"
+		Display	: StockItem
+
+    [!Field: ALStkCatAcc]
+
+	    Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+		Display	: StockCategory
+
+    [!Field: ALGodownAcc]
+
+        Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+		Display	: Godown
+
+    [!Field: ALCurrencyAcc]
+
+        Style   : if $IsReserved then "Normal Bold" else "Normal"
+		Display	: Currency
+
+    [!Field: ALUnitAcc]
+
+        Style   : if $IsSimpleUnit then "Normal Bold" else "Normal"
+		Display	: Unit
+
+    [!Field: ALSerialNumberAcc]
+
+        Style   : "Normal Bold"
+		Display	: SerialNumber
+
+    [!Field: ALVchTypeAcc]
+
+        Style   : if $IsReserved then "Normal Bold" else "Normal"
+		Display	: Voucher Type
+
+    [!Field: ALAttdTypeAcc]
+
+	     Style   : If $NumChildren > 0 Then "Normal Bold" Else "Normal"
+		 Display : Attendance Type
+
+	[!Field: ALCstCtrAcc]
+
+		Style   : If $NumChildren > 0 Then "Normal Bold  Italic" Else "Normal Italic"
+
+		Option  : ALAlterCostCentre    : NOT $ForPayroll
+		Option  : ALAlterEmployee      : $$IsPayrollOn AND ($$AddOnInfo:PayrollEnabled) AND $ForPayroll AND NOT $IsEmployeeGroup
+		Option  : ALAlterEmployeeGroup : $$IsPayrollOn AND ($$AddOnInfo:PayrollEnabled) AND $ForPayroll AND $IsEmployeeGroup
+
+		[!Field: ALAlterCostCentre]
+
+			Display	: CostCentre
+
+		[!Field: ALAlterEmployee]
+
+			Display	: All Employees
+
+		[!Field: ALAlterEmployeeGroup]
+
+			Display	: Employee Group
+
+	[Field: IncludeDependentMaster]
+
+		Use			: Logical Field
+		Set as		: ##SVIncludeDepMaster
+		Modifies	: SVIncludeDepMaster	: Yes
+
+	[Field: IMPClAsOp]
+
+		Use         : Logical Field
+		Set as      : ##IMPClAsOp
+		Modifies    : IMPClAsOp
+
+	[Field: IMPSVToDate]
+
+		Use         : Short Date Field
+
+		Set as      : @@DSPToDate
+		Set Always  : Yes
+
+		Modifies    : SVToDate  : Yes
+		Skip        : NOT #IMPClAsOp
+
+
+;; Chart of Accounts: Ledger Wise View Report Fields
+[Field: CA LedgerSlNo]
+
+	Use			: Number Field
+	Set as		: $$Line
+	Width		: 5% Page
+
+[Field: CA LedgerParent]
+
+	Use			: Name Field
+	Set as		: $Parent
+	Width		: 15% Page
+
+[Field: CA LedgerState]
+
+	Use			: Name Field
+	Set as		: $LedStateName
+	Width		: 15% Page
+	Invisible	: NOT @@IsIndian OR NOT ##IsCAShowLedgerStateName
+
+[Field: CA GSTDealerType]
+
+	Use			: Name Field
+
+	Set as		: $LedGSTRegDetails[Last].GSTRegistrationType
+	Set Always	: Yes
+
+	Width		: 10% Page
+
+	Inactive	: @@IsGSTNInfoApplLed OR NOT @@IsGSTDetailsApplLed
+	Invisible	: NOT ##IsCAShowPartyGSTIN OR NOT @@IsGSTOnIndia
+
+[Field: CA GSTIN]
+
+	Use         : Name Field
+
+	Set as      : $LedGSTRegDetails[Last].GSTIN
+	Set Always	: Yes
+
+	Width		: 12% Page
+
+	Inactive	: NOT @@IsCAGSTApplicableGroups
+	Invisible	: NOT ##IsCAShowPartyGSTIN OR NOT @@IsGSTOnIndia
+
+[Field: CA LedgerOpBal]
+
+	Use			: Amount Field
+	Set as		: $OpeningBalance
+	Width		: 10% Page
+	Format		: "DrCr"
+
+
+;; Chart of Accounts: Stock Items Wise View Report Fields
+[Field: CA StkItemSlNo]
+
+	Use			: Number Field
+	Set as		: $$Line
+	Width		: 7% Page
+
+[Field: CA StkItemParent]
+
+	Use			: Name Field
+	Set as		: $Parent
+	Width		: 25% Page
+
+[Field: CA StkItemUnits]
+
+	Use         : Symbol Field
+
+	Set as		: $BaseUnits
+	Width		: 8% Page
+
+[Field: CA StkItemOpQty]
+
+	Use         : Qty Primary Field
+	Set as		: $OpeningBalance
+	Width		: 10% Page
+
+[Field: CA StkItemOpRate]
+
+	Use         : Rate Price Field
+	Set as		: $OpeningRate
+	Width		: 10% Page
+
+[Field: CA StkItemUnitsPer]
+
+	Use         : Symbol Field
+
+	Set as		: $BaseUnits
+	Width		: 5% Page
+
+[Field: CA StkItemOpBal]
+
+	Use			: Amount Field
+	Set as		: $OpeningValue
+	Width		: 10% Page
+	
+[Field: AccType MasterCreate]
+
+	Use     	: Name Field
+
+	Set as  	: "" + "Create " + ##AccountType + ""
+
+	Width   	: 0
+	Style		: Small
+
+[Field: MST Config CALedgerStateName]
+
+	Use			: Logical Field
+
+	Set as		: If $$IsEmpty:##IsCAShowLedgerStateName Then No Else ##IsCAShowLedgerStateName
+	Set Always	: Yes
+
+	Modifies	: IsCAShowLedgerStateName
+
+[Field: MST Config CALedgerGSTRegnDtls]
+
+	Use			: Logical Field
+
+	Set as		: If $$IsEmpty:##IsCAShowPartyGSTIN Then No Else ##IsCAShowPartyGSTIN
+	Set Always	: Yes
+
+	Modifies	: IsCAShowPartyGSTIN	: Yes
+
+[Field: CA NatureGroup]
+
+	Use			: Form SubTitle
+
+	Set as		: $Name
+
+	Align		: Left
+	Full Width	: No
+	Style		: Large Serif Bold
+	Space Left	: 0
+	
+[Field: CA NatureGroupActual]
+
+	Use			: Name Field
+	Set as		: $ActualName
+	Variable	: GroupName
+	Invisible	: Yes
+
+[Field: CoA Employee Category]
+
+	Use				: Master Category
+	Storage			: Category
+
+	Set as			: If $$InCreateMode Then If NOT $$IsCostCategoryOn Then $PrimaryCostCategory:Company:##SVCurrentCompany Else ##DEFCostCategoryName Else $Category
+
+	Fetch Object	: CostCategory	: $$Value	: Category
+
+	Variable		: SVCostCategory
+	Modifies		: DEFCostCategoryName
+	Table			: List of ExtractEmployeeCategories, CreateNew	: $$Line = 1
+
+	Delete			: Key
+	Add				: Key : Create EmpCat, Alter EmpCat
+
+	Width			: @@MSTTriggerWidth
+	Skip On			: NOT $$IsEdited AND NOT $$IsEmpty:$$Value
+	Validate		: NOT ($$IsSysNameEqual:CreateNew:$$EditData)
+
+[Field: CoA List Of Accounts]
+
+	Use					: COA Other Masters
+	Act On Table Element: Yes		: Execute Obj Actions	: CoA
+
+[Field: COA Other Masters]
+
+	Use					: Table Config Template
+	Set As      		: If $$IsEmpty:##AccountType Then $$SysName:Ledgers Else ##AccountType	
+	
+	Table				: CoAActionItems, CoA ListOfAcc Table, ChangeView UserViewActions		: NOT $$IsRemoteCompany
+	Table				: CoAActionItemsRemote, CoA ListOfAcc Table, ChangeView UserViewActions	: $$IsRemoteCompany
+
+[Field: EL Deleted LedName]
+
+	Use			: Name Field
+	Quick Search: Yes
+	Set as		: $Name
+	Style		: Normal Italic
+	Display		: DelMST EditLog VersionHistory
+
+[Field: EL Deleted Flag]
+
+	Use			: Name Field
+	Set as		: $$LocaleString:"(Deleted)"
+	Style		: Normal Italic
+
+[Field: DeletedMasterField]
+
+    Use     	: Name Field
+    Width   	: 0
+	Set As  	: If @@ELNumDeletedMaster >0 Then @@NumDelMasterLine Else ""
+	Invisible	: NOT ##ShowDeletedMasters OR ##NonAlteredMasters
+
+;; End of File
