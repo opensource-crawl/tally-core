@@ -1,0 +1,1088 @@
+;; Sri Ganeshji : Sri Balaji : Sri Pitreshwarji : Sri Durgaji : Sri Venkateshwara
+
+<DefType: Collection>
+
+[Table: Account Type]
+
+    Title       : @@TypeofmasterTitle
+    List Name   : $$SysName:Budgets, $$SysName:Groups, $$SysName:Ledgers, $$SysName:CostCategories, $$SysName:CostCentres
+    List Name   : $$SysName:StockGroups, $$SysName:StockCategories, $$SysName:StockItems, $$SysName:Scenarios
+    List Name   : If @@IndianAccTerminology Then $$SysName:Godowns Else $$SysName:Locations
+	List Name	: $$SysName:VoucherTypes, $$SysName:Units, $$SysName:Currencies
+    List Name   : $$SysName:PayHeads, $$SysName:EmployeeGroups, $$SysName:Employees, $$SysName:AttendanceTypes
+
+	Client Only	: Yes
+
+[Table: Full Accounts]
+
+    Title       : $$LocaleString:"All Masters"
+    List Name   : $$SysName:AllMasters
+    List Name   : $$SysName:AllAcctMasters
+    List Name   : $$SysName:AllInvMasters
+    List Name   : $$SysName:AllStatMasters
+	List Name   : $$SysName:AllPayrollMasters
+
+	Client Only	: Yes
+	
+[Collection: TariffClassifications]
+
+    Type        : TariffClassification
+    BelongsTo   : Yes
+    WithAlias   : Yes
+	Fetch		: Name
+	Compute		: Alias	: $$Alias
+	Fetch		: OriginalDepth, OriginalSortPosition, OriginalName, MasterId, CanDelete
+    Sort        : @@Default       : $OriginalDepth, $OriginalSortPosition, $OriginalName
+
+[Collection: UnusedMastersSelected]
+	
+	Data Source	: Report	: Selected
+	Fetch		: Name
+
+[Collection: UnusedMastersCurrentLine]
+
+	Data Source	: Report	: Current
+	Fetch		: Name
+
+[Collection: ListCostCentreChildOfCCName]
+
+    Type        : Cost Centre
+    Child of    : ##pvCostCentreName
+	Parm Var	: pvCostCentreName : String : #CostCentreName
+
+;;For List of Accounts
+
+	Fetch		: Name, ForPayroll, IsEmployeeGroup, MasterId, CanDelete
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+	Compute		: Alias		        : $$Alias
+	Compute		: NumChildren	    : $$NumChildren
+
+    Filter      : CostCentreFilter
+    Filter      : BelongsToCstCatName
+    Sort        : @@Default                   : $$Name
+	
+[Collection: ListEmployeeGroups]
+
+    Type        : Cost Centre
+   	Child of    : ##pvCostCentreName
+	Parm Var	: pvCostCentreName : String : #CostCentreName
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+	
+;;For List of Accounts
+
+    Fetch		: Name, ForPayroll, IsEmployeeGroup, MasterId, CanDelete
+	Compute		: Alias 		    : $$Alias
+    Compute     : NumChildren       : $$NumChildren
+
+	Filter      : EmployeesFilter
+	Filter      : EmployeeGroupFilter
+    Filter      : BelongsToCstCatName
+    Sort        : @@Default		: $$Name
+
+[Collection: ListEmployeeChildOfEmpName]
+
+    Type        : Cost Centre
+    Child of    : ##pvCostCentreName
+	Parm Var	: pvCostCentreName : String : #CostCentreName
+
+;;For List of Accounts
+
+    Fetch		: Name, ForPayroll, IsEmployeeGroup, MasterId, CanDelete
+	Compute		: Alias 	 	    : $$Alias
+    Compute     : NumChildren       : $$NumChildren
+
+    Filter      : BelongsToCstCatName
+    Filter      : EmployeesFilter
+    Sort        : @@Default         : $$Name
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+
+[Collection: ListAttdTypeChildOfATName]
+
+    Type        : AttendanceType
+    Child of    : ##pvAttendanceTypeName
+	Parm Var	: pvAttendanceTypeName	: String	: #AttendanceTypeName
+
+;;For List of Accounts
+
+    Fetch       : Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias
+    Compute     : NumChildren       : $$NumChildren
+
+    Sort        : @@Default			: $$Name
+	Option 		: Attendance Type Filter Methods : @@FetchMasterMethods
+
+[Collection: ListBudgetChildOfBDGTName]
+
+;	Parm Var	: pvBudgetName	: String	: #BudgetName
+	Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+
+    Type        : Budget
+    Child of    : ##pvBudgetName
+
+	Fetch		: Name, IsScenario, MasterId, CanDelete
+	Compute		: Alias 	 	    : $$Alias
+	Compute		: NumChildren	    : $$NumChildren
+	Compute		: BudgetType  	    : $BudgetType
+
+    Filter      : BudgetsFilter
+
+    Format      : BudgetType, 25
+    Sort        : @@Default	: $BudgetType, $$Name
+	Option		: Budget Filter Methods	: @@FetchMasterMethods
+	
+[Collection: ListScenarioChildOfBDGTName]
+
+	Use			: ListBudgetChildOfBDGTName
+	Delete		: Filter
+	Add			: Filter      : ScenariosFilter
+
+
+;; List of Accounts New Collections to support Remote
+
+;; Group & Ledgers
+[Collection: RemoteGroupChildOfGroupName]
+
+    Type        : Group
+    Child of    : ##pvGroupName
+	Parm Var	: pvGroupName	: String	: #GroupName
+    Fetch       : Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias
+    Compute     : NumChildren       : $$NumChildren
+	Option		: Group Filter Methods	: @@FetchMasterMethods
+
+[Collection: RemoteLedgerChildOfGroupName]
+
+    Type        : Ledger
+    Child of    : ##pvGroupName
+	Parm Var	: pvGroupName	: String	: #GroupName
+    Fetch       : Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+    
+[Collection: RemoteListGroupLedgerChildOfGroupName]
+
+    Collection  : RemoteGroupChildOfGroupName
+    Collection  : RemoteLedgerChildOfGroupName
+    Sort        : @@Default         : $$Type, $$Name
+	
+	Parm Var	: pvGroupName	: String	: #GroupName
+    
+;; PayHead
+    
+[Collection: RemotePAYGroupChildOfGroupName]
+
+    Type        : Group
+    Child of    : ##pvGroupName
+	Parm Var	: pvGroupName	: String	: #GroupName
+    Filter      : PayHeadGroup
+    Fetch       : Name, MasterId, CanDelete
+    Compute     : IsGroup            : $$IsGroup   
+    Compute     : Alias              : $$Alias    
+    Compute     : NumChildren        : $$NumChildren
+    Compute     : NumPayHeadsInGroup : $$NumOfPayHeadInGrp:$Name
+	Option		: Group Filter Methods	: @@FetchMasterMethods
+	
+[Collection: RemotePAYLedgerChildOfGroupName]
+
+    Type        : Ledger
+    Child of    : ##pvGroupName
+	Parm Var	: pvGroupName	: String	: #GroupName
+    Filter      : PayrollLedFilter 
+    Fetch       : Name, MasterId, CanDelete
+    Compute     : IsLedger              : $$IsLedger
+    Compute     : Alias                 : $$Alias    
+    Compute     : ForPayroll            : $ForPayroll
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+    
+[Collection: RemotePAYGroupLedgerChildOfGroupName]
+
+    Collection  : RemotePAYGroupChildOfGroupName
+    Collection  : RemotePAYLedgerChildOfGroupName
+	
+	Parm Var	: pvGroupName	: String	: #GroupName
+    
+;; Cost Category 
+
+[Collection: RemoteCost Category Object]
+
+    Type        : Cost Category
+    
+    Fetch   	: Name, MasterId, CanDelete
+    Compute     : Alias                 : $$Alias        
+	Compute		: NumChildren	        : $$NumChildren
+	Option 		: Cost Category Filter Methods : @@FetchMasterMethods
+	
+;; Godown
+
+[Collection: RemoteGodownChildOfGodownName]
+
+    Type        : Godown
+    Child of    : ##pvsGodownName
+
+	ParmVAR		: pvsGodownName	: String	: #DSPGodownName
+
+	Fetch		: Name, MasterId, CanDelete
+    Compute     : Alias                 : $$Alias    	
+	Compute		: NumChildren	        : $$NumChildren
+	Option 		: Godown Filter Methods     : @@FetchMasterMethods
+	
+;; Stock Group
+
+[Collection: RemoteStockGroupChildOfGroupName]
+
+    Type        : Stock Group
+    Child of    : ##pvsStockGroupName
+
+	ParmVAR		: pvsStockGroupName :  String	: #StockGroupName
+
+	Fetch		: Name, MasterId, CanDelete
+    Compute     : Alias                 : $$Alias    
+    Compute		: NumChildren	        : $$NumChildren	
+	Option		: Stock Group Filter Methods	: @@FetchMasterMethods
+
+;; Stock Category
+
+[Collection: RemoteStockCatItemChildOfStockCategoryName]
+
+	ParmVAR		: pvsStockCategoryName :  String	: #StockCategoryName
+
+    Collection  : RemoteStockCategoryChildOfStockCategoryName, RemoteStockItemInStockCategoryName
+
+[Collection: RemoteStockCategoryChildOfStockCategoryName]
+
+    Type        : StockCategory
+    Child of    : ##pvsStockCategoryName
+	ParmVAR		: pvsStockCategoryName :  String	: #StockCategoryName
+	Fetch		: Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias    		
+    Compute		: NumChildren		: $$NumChildren 		
+	Option 		: Stock Category Filter Methods : @@FetchMasterMethods
+	
+[Collection: RemoteStockItemInStockCategoryName]
+
+    Type        : Stock Item
+    Filter      : ChildOfStockCategoryName
+	Fetch		: Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias
+	Option		: Stock Item Filter Methods	: @@FetchMasterMethods
+	
+;; Stock Item
+
+[Collection: RemoteStockGroupItemChildOfGroupName]
+
+    ParmVAR		: pvsStockGroupName :  String	: #StockGroupName
+
+    Collection  : RemoteStockGroupChildOfGroupName
+    Collection  : RemoteStockItemChildOfGroupName
+ 
+[Collection: RemoteStockItemChildOfGroupName]
+
+    Type        : Stock Item
+    Child of    : ##pvsStockGroupName
+    ParmVAR		: pvsStockGroupName :  String	: #StockGroupName			
+    Fetch		: Name, MasterId, CanDelete
+    Compute     : Alias             : $$Alias    		
+	Option		: Stock Item Filter Methods	: @@FetchMasterMethods
+;; Currency
+
+[Collection: RemoteCurrency]
+
+    Type        : Currency
+  	Fetch		: Name, FormalName,  IsReserved, MasterId, CanDelete
+	Option		: Currency Filter Methods : @@FetchMasterMethods
+
+;;For List of Accounts - List of Voucher Type
+
+[Collection: List of Voucher Types]
+
+    Type        : Voucher Type
+	Fetch		: Name, IsReserved, MasterId, CanDelete
+    Filter      : RemoveIndentFilter
+    BelongsTo   : Yes
+	Compute		: Alias        : $$Alias
+	Option		: VTYP Filter Methods	: @@FetchMasterMethods
+
+[Collection: ListEmployeeCategory]
+
+	Type        : Cost Category
+
+	Fetch   	: Name, MasterId, CanDelete, ForPayroll, IsEmployeeGroup
+	Compute		: Alias 		: $$Alias
+	Compute     : NumChildren   : $$NumChildren
+	Option 		: Cost Category Filter Methods : @@FetchMasterMethods
+
+;	Filter      : EmployeesFilter , EmpBelongsToCstCatName
+
+;;; Deleted Masters to represent counts on bottom part of COA
+[Collection: DeletedLedgers]
+
+	Type        : Ledger
+	Include Deleted: Yes
+
+	Fetch       : Name, MasterId
+
+	Filter		: IsDeletedMaster
+
+[Collection: DeletedStockItems]
+
+	Type        : Stock Item
+	Include Deleted: Yes
+
+	Fetch       : Name, MasterId
+
+	Filter		: IsDeletedMaster
+
+
+/****************Following collections are used for listing unused masters in List of Accounts***********************/
+	
+[Collection: UnusedLedgers]
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+	Type        : Ledger
+    
+	Fetch       : Name, MasterId, Candelete, ClosingBalance, IsReserved, Parent
+	Compute		: Alias		        : $$Alias
+
+	Filter		: IncUnusedOpBalMstInUnused, TypeofMastersCOAFltr
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+
+[Collection: UnusedGroups]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+    Type        : Group
+   
+	Fetch       : Name, MasterId, CanDelete,  ClosingBalance, IsReserved, Parent
+	Compute		: Alias		        : $$Alias
+
+	Filter		: CanDelete, TypeofMastersCOAFltr
+	
+	Sort        : @@Default	: $$Name
+	Option		: Group Filter Methods	: @@FetchMasterMethods
+	
+[Collection: UnusedBudgets]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+    Type        : Budget
+
+	Fetch		: Name, IsScenario, MasterId, CanDelete
+	Compute		: Alias 	 	    : $$Alias
+	Compute		: BudgetType  	    : $BudgetType
+
+    Filter      : BudgetFilter,  CanDelete
+	
+	Sort        : @@Default	: $BudgetType, $$Name
+	Option		: Budget Filter Methods	: @@FetchMasterMethods
+
+[Collection: Unused Scenarios]
+
+	Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+
+    Type        : Budget
+
+	Fetch		: Name, IsScenario, MasterId, CanDelete
+	Compute		: Alias 	 	    : $$Alias
+	Compute		: BudgetType  	    : $BudgetType
+
+    Filter      : ScenarioFilter,  CanDelete
+	Sort        : @@Default	: $BudgetType, $$Name
+	
+	Option		: Budget Filter Methods	: @@FetchMasterMethods
+
+[Collection: Unused EmpCat]
+
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+	Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	Type        : Cost Category
+
+	Fetch   	: Name, MasterId, CanDelete, ClosingBalance
+	Compute     : Alias 	: $$Alias
+
+	Filter      : CanDelete
+	Sort        : @@Default	: $$Name
+	Option 		: Cost Category Filter Methods : @@FetchMasterMethods
+
+[Collection: UnusedGSTClassifications]
+
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+
+	Type        : GSTClassification
+
+    WithAlias   : Yes
+	Fetch		: Name, OriginalDepth, OriginalSortPosition, OriginalName, MasterId, CanDelete
+	Compute		: Alias	: $$Alias
+
+	Filter		: CanDelete
+
+	Sort        : @@Default       : $OriginalDepth, $OriginalSortPosition, $OriginalName
+
+[Collection		: Unused Cost Category Object]
+
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+    Type        : Cost Category
+    
+    Fetch   	: Name, MasterId, CanDelete, ClosingBalance
+    Compute     : Alias                 : $$Alias        
+	
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option 		: Cost Category Filter Methods : @@FetchMasterMethods
+
+[Collection: Unused CCName]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+    Type        : Cost Centre
+    
+	Fetch		: Name, ForPayroll, IsEmployeeGroup, ClosingBalance, CanDelete, Parent
+	Compute		: Alias		        : $$Alias
+
+	Filter		:  CostCentreFilter, CanDelete
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+	
+    Sort        : @@Default         : $$Name
+		
+[Collection: Unused PAYLedger]
+
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+    Type        : Ledger
+ 
+    Fetch       : Name, MasterId, CanDelete, ClosingBalance, IsReserved, Parent
+    
+	Compute     : IsLedger              : $$IsLedger
+    Compute     : Alias                 : $$Alias    
+    Compute     : ForPayroll            : $ForPayroll
+	
+	Filter      : PayrollLedFilter, CanDelete 
+	
+	Sort        : @@Default	: $$Name
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+	
+[Collection: Unused Employee]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+	Type        : Cost Centre
+
+    Fetch		: Name, ForPayroll, IsEmployeeGroup, MasterId, CanDelete, ClosingBalance, Parent
+	Compute		: Alias 		    : $$Alias
+
+	Filter      : EmployeesFilter, NotEmployeeGroupFilter, CanDelete
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+   
+	Sort        : @@Default			: $$Name
+
+[Collection: UnusedEmployeeGroups]
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+   
+	Type        : Cost Centre
+   
+    Fetch		: Name, ForPayroll, IsEmployeeGroup, MasterId, CanDelete, ClosingBalance, Parent
+	Compute		: Alias 		    : $$Alias
+
+	Filter      : EmployeesFilter, EmployeeGroupFilter, CanDelete
+
+    Sort        : @@Default		: $$Name
+	Option		: CostCentre Filter Methods	: @@FetchMasterMethods
+	
+[Collection: Unused Godowns]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+    
+	Type        : Godown
+
+	Fetch		: Name, MasterId, CanDelete, ClosingBalance, Parent
+    Compute     : Alias                 : $$Alias    	
+	Compute		: NumChildren	        : $$NumChildren
+	
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option 		: Godown Filter Methods     : @@FetchMasterMethods
+	
+[Collection: Unused Stock Groups]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+   
+	Type        : Stock Group
+    
+	Fetch		: Name, MasterId, CanDelete, ClosingBalance, Parent
+    Compute     : Alias                 : $$Alias    
+	
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option		: Stock Group Filter Methods	: @@FetchMasterMethods
+	
+[Collection: Unused Stock Category]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+	Type        : StockCategory
+	
+	Fetch		: Name, MasterId, CanDelete, ClosingBalance
+	Compute     : Alias             : $$Alias    		
+	
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option 		: Stock Category Filter Methods : @@FetchMasterMethods
+	
+[Collection: UnusedTariffClassifications]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+    
+	Type        : TariffClassification
+
+    WithAlias   : Yes
+	Fetch		: Name, OriginalDepth, OriginalSortPosition, OriginalName, MasterId, CanDelete
+	Compute		: Alias	: $$Alias
+		
+	Filter		: CanDelete
+   
+	Sort        : @@Default       : $OriginalDepth, $OriginalSortPosition, $OriginalName
+	
+[Collection: Unused Stock Item]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+	Type        : Stock Item
+ 
+	Fetch		: Name, MasterId, CanDelete, ClosingBalance, Partno, ClosingValue
+	Compute     : Alias	: $$Alias    	
+	
+	Filter		: IncUnusedOpBalMstInUnused, TypeofMastersCOAFltr
+	
+	Sort        : @@Default	: $$Name
+	Option		: Stock Item Filter Methods	: @@FetchMasterMethods
+		
+[Collection: UnusedCurrency]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+	
+	Type        : Currency
+	
+	Fetch		: Name, FormalName, IsReserved, MasterId, CanDelete
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option		: Currency Filter Methods : @@FetchMasterMethods
+	
+[Collection: Unused Unit]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+    
+	Type        : Unit
+
+    With Alias  : Yes
+	Fetch		: Name, CanDelete, MasterID
+
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option		: Unit Filter Methods	: @@FetchMasterMethods
+	
+[Collection: Unused SerialNumbers]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+    
+	Type        : SerialNumber
+    
+    WithAlias   : Yes
+	Fetch		: Name, CanDelete, MasterID
+	Compute		: Alias	: $$Alias
+
+	Filter		: CanDelete
+	
+	Sort        : @@Default	: $$Name
+	
+[Collection: Unused Voucher Types]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+   
+	Type        : Voucher Type
+	
+	Fetch		: Name, IsReserved, MasterId, CanDelete, ClosingBalance, Parent
+   	Compute		: Alias        : $$Alias
+	
+	Filter      : PayrollVchAllowFilter, RemoveIndentFilter, CanDelete
+	
+	Sort        : @@Default	: $$Name
+	Option		: VTYP Filter Methods	: @@FetchMasterMethods
+  	
+[Collection:Unused ListAttdType]
+	
+	;; Parmvar is used to refresh collection when the master is deleted from List of Account main report
+    Parm Var	: ShowUnused	: Logical	: ##ShowUnusedMasters
+    
+	Type        : AttendanceType
+	
+	Fetch       : Name, MasterId, CanDelete, ClosingBalance, Parent
+    Compute     : Alias             : $$Alias   
+	
+	Filter		: CanDelete
+	
+	Sort        : @@Default			: $$Name
+	Option 		: Attendance Type Filter Methods : @@FetchMasterMethods
+
+[Collection: CAListOfLedgersSummary]
+
+	Switch	: COAType	: EL CAListOfLedgersSummary		: @@IsEditLogEnabled AND ##ShowDeletedMasters AND $$IsSysName:##MGroup AND NOT ##NonAlteredMasters
+	Switch	: COAType	: DE CAListOfLedgersSummary		: Yes
+
+	[!Collection: EL CAListOfLedgersSummary]
+
+		Collection	: CAListOfLedgersColl, List of Deleted Masters
+		Sort    	: @@Default		: $$Name
+
+	[!Collection: DE CAListOfLedgersSummary]
+
+		Collection	: CAListOfLedgersColl
+
+[Collection: CAListOfLedgersColl]
+
+	Type		: Ledger
+
+	Filter      : BelongsToMGroup
+
+	Compute     : Alias             : $$Alias
+
+	Fetch		: Name, Parent, OpeningBalance, LedStateName, GSTRegistrationType, PartyGSTIN, PartyOldGSTIN, TransporterId, LedMulti Address List.*
+	Fetch		: Alias, Language Name, MasterId, CanDelete
+
+	Filter		: IsSelectedParent, TypeofMastersCOAFltr
+	
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+
+[Collection: CAListOfStkItemSummary]
+
+	Switch	: COAType	: EL CAListOfStkItemSummary		: @@IsEditLogEnabled AND ##ShowDeletedMasters AND $$IsSysName:##MStockGroup AND NOT ##NonAlteredMasters
+	Switch	: COAType	: DE CAListOfStkItemSummary		: Yes
+
+	[!Collection: EL CAListOfStkItemSummary]
+
+		Collection	: CAListOfStockItemsColl, List of Deleted Masters
+		Sort    	: @@Default		: $$Name
+
+	[!Collection: DE CAListOfStkItemSummary]
+
+		Collection	: CAListOfStockItemsColl
+
+[Collection: CAListOfStockItemsColl]
+
+	Type		: Stock Item
+
+	Compute     : Alias             : $$Alias
+	Filter		: BelongsToMStockGroup    
+
+	Fetch		: Name, Parent, BaseUnits, OpeningRate, OpeningBalance, OpeningValue
+	Fetch		: Alias, Language Name, MasterId, CanDelete
+
+	Filter		: IsSelectedParent, TypeofMastersCOAFltr
+	Option		: Stock Item Filter Methods	: @@FetchMasterMethods
+
+[Collection: CoAActionItems]
+
+	Object		: ChangeCompany, CoAShowinactiveMasters
+	
+[Collection: CoAActionItemsRemote]
+
+	Object		: CoAShowinactiveMasters
+
+[Collection: CoA ListOfAcc Table]
+
+	Title		: $$LocaleString:"List of Masters"
+	Format		: $Name, 40
+	Table Sort	: Default
+	Client Only	: Yes
+	Align		: Center
+	Full Height	: Yes
+
+	Object	: GT AL Acc Master Label, GT AL Inv Master Label, GT AL Payroll Master Label
+
+	Explode	: AccountingMasters	: $Name=@@AccountingMasters
+	Explode	: InventoryMasters	: $Name=@@InventoryMasters
+	Explode	: PayrollMasters	: $Name=@@PayrollMasters
+
+	Advanced: If ##ShowHideInactive Then No Else NOT $IsFeatureOn
+
+	[Collection	: AccountingMasters]
+
+		Objects	: GT AL Group, GT AL Ledgers, GT AL VchType, GT AL CostCategory, GT AL Cost centre, GT AL Currencies, GT AL Budget, GT AL Scenario
+		Color	: Deep Grey	: NOT $IsFeatureOn
+		Advanced: If ##ShowHideInactive Then No Else NOT $IsFeatureOn
+		Client Only	: Yes
+
+	[Collection	: InventoryMasters]
+
+		Objects	: GT AL Stk group, GT AL StkItem, GT AL Stock Cat, GT AL Units, GT AL Godown
+		Color	: Deep Grey	: NOT $IsFeatureOn
+		Advanced: If ##ShowHideInactive Then No Else NOT $IsFeatureOn
+		Client Only	: Yes
+	
+	[Collection	: PayrollMasters]
+
+		Objects	: GT AL EmployeeCategory ,GT AL EmpGroup, GT AL Employee, GT AL AttnType, GT AL Payhead
+		Color	: Deep Grey	: NOT $IsFeatureOn
+		Advanced: If ##ShowHideInactive Then No Else NOT $IsFeatureOn
+		Client Only	: Yes
+
+[Collection: Al Exception]
+	
+	Use			: Exceptions Report List Template
+	Objects		: AL Excep Show Unused, AL Excep Show Used
+
+	Option		: Al Exception Ledger	: $$IsSysNameEqual:Ledgers:##AccountType OR ($$IsSysNameEqual:Employees:##AccountType AND $$IsPayrollOn AND $$Allow:Display:PayrollMasters AND $$AddOnInfo:PayrollEnabled)
+
+	Option		: Al Exception Item		: $$IsSysNameEqual:StockItems:##AccountType AND @@IsIndianGSTOn AND NOT $$IsRemoteCompany AND $$IsSimpleCompany:##SVCurrentCompany AND $$IsAccountingOn:$$CurrentCompany AND  +
+														($$Allow:Display:GSTReturns OR $$Allow:Display:GSTPaymentReconciliation OR $$Allow:Display:InventoryMasters OR $$Allow:Alter:AccountsMasters)
+
+	[!Collection: Al Exception Ledger]
+
+		Object	: AL Excep EmailValidation
+
+		;; TDS Parties PAN Validation
+		Option	: AL ExcepLed PANValidation	: $$IsSysNameEqual:Ledgers:##AccountType AND @@IsIndian AND $$IsTDSOn:$$CurrentSimpleCompany AND $$Allow:Display:TDSReports
+		
+		;; TCS Parties PAN Validation
+		Option	: AL ExcepLedTCS PANValidation	: $$IsSysNameEqual:Ledgers:##AccountType AND @@IsIndian AND $$IsTCSOn:$$CurrentSimpleCompany AND $$Allow:Display:TCSReports		
+		
+		;; Employee PAN Validation
+		Option	: AL ExcepEmp PANValidation	: $$IsSysNameEqual:Employees:##AccountType AND $$IsPayrollOn AND $$Allow:Display:PayrollMasters AND $$AddOnInfo:PayrollEnabled
+		
+		;; Employee PRAN Validation
+		Option	: AL ExcepEmp PRANValidation: $$IsSysNameEqual:Employees:##AccountType AND $$IsPayrollOn AND $$Allow:Display:PayrollMasters AND $$AddOnInfo:PayrollEnabled AND @@IsPayStatReportsOn
+
+		Option	: Al Excep GSTIN	: $$IsSysNameEqual:Ledgers:##AccountType AND @@IsIndianGSTOn AND NOT $$IsRemoteCompany AND $$IsSimpleCompany:##SVCurrentCompany AND $$IsAccountingOn:$$CurrentCompany AND  +
+														($$Allow:Display:GSTReturns OR $$Allow:Display:GSTPaymentReconciliation OR $$Allow:Display:InventoryMasters OR $$Allow:Alter:AccountsMasters)
+												  
+		Option	: Al Excep VAT TRN	: $$IsSysNameEqual:Ledgers:##AccountType AND @@IsGCCCountriesVATOn
+
+		[!Collection: AL ExcepLed PANValidation]
+
+			Object	: AL Excep PANValidation
+			
+		[!Collection: AL ExcepLedTCS PANValidation]
+
+			Object	: AL ExcepTCS PANValidation
+			
+		 [!Collection: AL ExcepEmp PANValidation]
+
+			Object	: AL Excep EmpPANValidation
+
+		 [!Collection: AL ExcepEmp PRANValidation]
+
+			Object	: AL Excep PRANValidation
+
+		[!Collection: Al Excep GSTIN]
+
+			Object	: AL Excep GSTINValidation
+
+		[!Collection: Al Excep VAT TRN]
+
+			Object	: AL Excep Vat TRN Validation
+
+	[!Collection: Al Exception Item	]
+
+			Object	: AL Excep MAP UQC
+
+[Collection: AL Change View]
+
+	Use		: CV Views Header
+	Explode	: List of Accounts Views	: @@IsViewTitle
+
+[Collection: List of Accounts Views]
+
+	Use		: CV Report List Template
+	Objects : ListofAccountsItemWise, ListofAccountsLedgerWise
+		
+[Collection: AL MultiMasters]
+
+	Use		: CV Report List Template
+	
+	Title	: $$LocaleString:"List of Multi-Masters"
+	
+	Option	: AL CV Group Create	: $$IsSysNameEqual:Groups:##AccountType
+;	Option	: AL CV Group Alter		: $$IsSysNameEqual:Groups:##AccountType
+
+	Option	: AL CV Ledger Create	: $$IsSysNameEqual:Ledgers:##AccountType
+;	Option	: AL CV Ledger Alter	: $$IsSysNameEqual:Ledgers:##AccountType
+
+
+	Option	: AL CV CstCnt Create	: $$IsSysNameEqual:CostCentres:##AccountType
+;	Option	: AL CV CstCnt Alter	: $$IsSysNameEqual:CostCentres:##AccountType
+
+	Option	: AL CV StkGrp Create	: $$IsSysNameEqual:StockGroups:##AccountType
+;	Option	: AL CV StkGrp Alter	: $$IsSysNameEqual:StockGroups:##AccountType
+
+	Option	: AL CV StkItm Create	: $$IsSysNameEqual:StockItems:##AccountType
+;	Option	: AL CV StkItm Alter	: $$IsSysNameEqual:StockItems:##AccountType
+
+	Option	: AL CV StkCat Create	: $$IsSysNameEqual:StockCategories:##AccountType
+;	Option	: AL CV StkCat Alter	: $$IsSysNameEqual:StockCategories:##AccountType
+
+	Option	: AL CV Godown Create	: $$IsSysNameEqual:Godowns:##AccountType
+;	Option	: AL CV Godown Alter	: $$IsSysNameEqual:Godowns:##AccountType
+
+	Option	: AL CV EmpGrp Create	: $$IsSysNameEqual:EmployeeGroups:##AccountType
+;	Option	: AL CV EmpGrp Alter	: $$IsSysNameEqual:EmployeeGroups:##AccountType
+
+	Option	: AL CV Emp Create		: $$IsSysNameEqual:Employees:##AccountType
+;	Option	: AL CV Emp Alter		: $$IsSysNameEqual:Employees:##AccountType
+
+	Option	: AL CV CstCat Create	: $$IsSysNameEqual:CostCategories:##AccountType
+ 	Option	: AL CV EmpCat Create	: @@IsMSTEmployeeCategory
+
+	Option	: AL CV Ledger Alter	: $$IsSysNameEqual:Ledgers:##AccountType OR $$IsSysNameEqual:Groups:##AccountType OR $$IsSysNameEqual:CostCentres:##AccountType OR $$IsSysNameEqual:StockGroups:##AccountType OR +
+										$$IsSysNameEqual:StockItems:##AccountType OR + $$IsSysNameEqual:StockCategories:##AccountType OR $$IsSysNameEqual:Godowns:##AccountType OR  $$IsSysNameEqual:Locations:##AccountType OR +
+										$$IsSysNameEqual:EmployeeGroups:##AccountType OR $$IsSysNameEqual:Employees:##AccountType
+	Option	: AL CV Credit Limit	: $$IsSysNameEqual:Ledgers:##AccountType
+
+	Option	: AL CV CstCat Alter	: $$IsSysNameEqual:CostCategories:##AccountType
+
+
+	Option	: AL CV EmpCat Alter	: @@IsMSTEmployeeCategory
+
+	Option	: AL CV RateOfExchange	: $$IsSysNameEqual:Currencies:##AccountType
+
+	Option	: AL CV StkGrpup GSTRateSetup		: NOT $$IsRemoteCompany AND @@IsIndianGSTOn AND ($$IsSysNameEqual:StockGroups:##AccountType OR $$IsSysNameEqual:StockItems:##AccountType) AND $$IsInventoryOn:$$CurrentCompany
+	Option	: AL CV Accts GSTRateSetup			: NOT $$IsRemoteCompany AND @@IsIndianGSTOn AND ($$IsSysNameEqual:Groups:##AccountType OR $$IsSysNameEqual:Ledgers:##AccountType)
+
+	Option	: AL Create StkGrp VATRateSetup		: ($$IsSysNameEqual:StockGroups:##AccountType OR $$IsSysNameEqual:StockItems:##AccountType) AND $$IsSimpleCompany:##SVCurrentCompany AND @@IsVATTaxenabled_Menu AND (@@IsRBVATSupportedIndianState OR @@IsKenyaVATOn) AND NOT $$IsRemoteCompany AND $$IsAccountingOn:$$CurrentCompany
+	Option	: AL Create StkGrp ExciseRateSetup	: ($$IsSysNameEqual:StockGroups:##AccountType OR $$IsSysNameEqual:StockItems:##AccountType) AND $$IsSimpleCompany:##SVCurrentCompany AND NOT $$IsRemoteCompany AND @@IsExcTaxenabled_Menu AND @@IsExciseTraderOn
+
+	[!Collection: AL CV EmpCat Create]
+
+		Objects	: AL Create EmpCat
+	
+	[!Collection: AL CV EmpCat Alter]
+		
+		Objects	: AL Alter EmpCat
+
+	[!Collection: AL CV RateOfExchange]
+
+		Object	: AL CV RateOfExchange
+
+	[!Collection: AL CV Emp Create]
+
+		Objects	: AL Create Emp 
+	
+	[!Collection: AL CV Emp Alter]
+
+		Objects	: AL  Alter Emp
+
+	[!Collection: AL CV EmpGrp Create]
+
+		Objects	: AL Create EmpGrp 
+	
+	[!Collection: AL CV EmpGrp Alter]
+
+		Objects	: AL  Alter EmpGrp
+
+	[!Collection: AL CV Godown Create]
+
+		Objects	: AL Create Godown 
+	
+	[!Collection: AL CV Godown Alter]
+
+		Objects	: AL  Alter Godown
+
+	[!Collection: AL CV StkCat Create]
+
+		Objects	: AL Create StkCat 
+	
+	[!Collection: AL CV StkCat Alter]
+
+		Objects	: AL  Alter StkCat
+
+	[!Collection: AL CV StkItm Create]
+
+		Objects	: AL Create StkItm 
+	
+	[!Collection: AL CV StkItm Alter]
+
+		Objects	: AL  Alter StkItm
+
+	[!Collection: AL Create StkGrp VATRateSetup]
+
+		Object	: AL Create StkGrp VATRateSetup
+
+	[!Collection: AL Create StkGrp ExciseRateSetup]
+
+		Object	: AL Create StkGrp ExciseRateSetup
+
+	[!Collection: AL CV StkGrpup GSTRateSetup]
+
+		Object	: AL Create StkGrp GSTRateSetup
+
+	[!Collection: AL CV Accts GSTRateSetup]
+
+		Object	: AL Create Accts GSTRateSetup
+
+	[!Collection: AL CV StkGrp Create]
+
+		Objects	: AL Create StkGrp 
+	
+	[!Collection: AL CV StkGrp Alter]
+
+		Objects	: AL  Alter StkGrp
+
+	[!Collection: AL CV CstCnt Create]
+
+		Objects	: AL Create CstCnt 
+	
+	[!Collection: AL CV CstCnt Alter]
+
+		Objects	: AL  Alter CstCnt
+
+	[!Collection: AL CV Group Create]
+
+		Objects	: AL Create Group 
+	
+	[!Collection: AL CV Group Alter]
+
+		Objects	: AL Alter Group
+
+	[!Collection: AL CV Ledger Create]
+
+		Objects	: AL CreateLedger
+
+	[!Collection: AL CV Ledger Alter]
+
+		Object	: AL Alter Ledger
+		
+	[!Collection: AL CV Credit Limit]
+
+		Object	: AL Alter Credit Limit
+
+	[!Collection: AL CV CstCat Create]
+
+		Object	: AL Create CstCat
+		
+	[!Collection: AL CV CstCat Alter]
+
+		Object	: AL Alter CstCat
+
+[Collection: CA RemoteGroupChildOfGroupName]
+
+	Parm Var	: pvGroupName	: String	: #AccTypeName
+	Type        : Group
+	Child of    : ##pvGroupName
+
+	Fetch       : Name, MasterId, CanDelete, SortPosition, IsRevenue, IsDeemedPositive
+	Compute     : Alias			: $$Alias
+	Compute     : NumChildren	: $$NumChildren
+	Option		: Group Filter Methods	: @@FetchMasterMethods
+
+[Collection: CA RemoteGroupChildOfGroupNameAssets]
+
+	Use			: CA RemoteGroupChildOfGroupName
+	Filter		: CACurrAssetsNature
+
+[Collection: CA RemoteGroupChildOfGroupNameLiabilitiesAndPL]
+
+	Collection	: CA RemoteGroupChildOfGroupNameLiabilities
+	Collection  : CA RemoteGroupChildOfGroupNameProfitLoss
+	
+[Collection: CA RemoteGroupChildOfGroupNameLiabilities]
+
+	Use			: CA RemoteGroupChildOfGroupName
+	Filter		: CACurrLiabNature
+	
+[Collection: CA RemoteGroupChildOfGroupNameProfitLoss]
+
+	Type		: Ledger
+	Child Of	: $$SysName:Primary
+	Option			: Ledger Filter Methods	: @@FetchMasterMethods
+
+[Collection: CA RemoteGroupChildOfGroupNameExpenses]
+
+	Use			: CA RemoteGroupChildOfGroupName
+	Filter		: CAExpensesNature
+
+[Collection: CA RemoteGroupChildOfGroupNameIncome]
+
+	Use			: CA RemoteGroupChildOfGroupName
+	Filter		: CAIncomesNature
+
+[Collection: CANumStkGroup]
+
+	Type		: StockGroup
+	Child Of	: $Name
+	Belongs To	: Yes
+	Option		: Stock Group Filter Methods	: @@FetchMasterMethods
+
+[Collection: CANumGroup]
+
+	Type		: Group
+	Child Of	: $Name
+	Belongs To	: Yes
+	Option		: Group Filter Methods	: @@FetchMasterMethods
+
+[Collection: CAListOfGroups]
+
+	Use			: CANumGroup
+	Filter		: IsSameParentGroup
+
+[Collection: CAListOfLedgers]
+
+	Use			: ListofLedgers
+	Filter		: IsSameParentGroup
+
+[Collection: CAListOfStkGroup]
+
+	Use			: CANumStkGroup
+	Filter		: IsSameParentStkGroup
+
+[Collection: List of Deleted Masters]
+
+	Type		: Deleted Master
+	Fetch		: *.*
+	Filter		: IsDeletedMaster
+	Sort    	: @@Default			: $$Name
+
+[Collection: EditLogMasterColl]
+
+	IsODBCTable : Yes
+	Fetch		: Name, MasterId, CanDelete, Language Name, IsEditLogPresent
+	Compute     : Alias             : $$Alias
+	Filter		: TypeofMastersCOAFltr
+
+[Collection: EditLogLedgerColl]
+
+	Use			: EditLogMasterColl
+    Type        : Ledger
+
+[Collection: EditLogStockItemColl]
+
+	Use			: EditLogMasterColl
+    Type        : Stock Item
+
+[Collection: EditLogGroupColl]
+
+	Use			: EditLogMasterColl
+	Type		: Group
+
+;; End of File
