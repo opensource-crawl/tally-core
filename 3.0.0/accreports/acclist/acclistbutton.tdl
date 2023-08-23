@@ -1,0 +1,484 @@
+;; Sri Ganeshji : Sri Balaji : Sri Pitreshwarji : Sri Durgaji : Sri Venkateshwara
+
+<DefType: Button>
+	
+	[!Key: AT Create CostCategories]
+		
+		Action  : Create : CostCategory
+
+	[!Key: AT Create Budgets]
+		
+		Action  : Create : Budget
+		
+	[!Key: AT Create Scenarios]
+
+		Action  : Create : Scenario
+		
+	[!Key: AT Create Godowns]
+		
+		Action  : Create : Godown
+		
+	[!Key: AT Create StockCategories]
+		
+		Action  : Create : StockCategory
+		
+	[!Key: AT Create Tariff Class]
+
+		Action  : Create : TariffClassification
+		
+	[!Key: AT Create Currencies]
+
+		Action  : Create : Currency
+		
+	[!Key: AT Create Units]
+
+		Action  : Create : Unit
+		
+	[!Key: AT Create Serial Number]
+
+		Action  : Create : Serial Number
+		
+	[!Key: AT Create VoucherTypes]
+
+		Action  : Create : VoucherType
+		
+	[!Key: AT Create Attd Types]
+
+		Action  : Create : Attendance Type
+
+[Key: Create Serial Number]
+
+    Key     : Alt+C
+    Action  : Create : Serial Number
+
+[Button: UnusedMasters]
+
+	Key			: F5
+	Title		: If ##ShowUnusedMasters Then $$LocaleString:"Show All" Else $$LocaleString:"Show Unused"
+	Action List	: LASelectAllToggle, UnusedMstToggle
+
+[Key: UnUsedMstToggle]
+
+	Key		: F5
+	Action	: Set	: ShowUnusedMasters		:NOT ##ShowUnusedMasters
+
+[Key: LASelectAllToggle]
+
+	Key		: F5
+	Action	: Set		: SVSelectAllToggle	: No
+
+[Key: AL Groups]
+
+    Key     : Ctrl + G
+    Title   : $$LocaleString:"Groups"
+    Action  : Set : AccountType : $$SysName:Groups
+    Inactive: $$IsSysNameEqual:Groups:##AccountType
+
+[Key: AL Ledger]
+
+    Key     : Ctrl+L
+    Title   : $$LocaleString:"Ledgers"
+    Action  : Set : AccountType : $$SysName:Ledgers
+    Inactive: $$IsSysNameEqual:Ledgers:##AccountType
+
+[Key: AL PayHead]
+
+    Key     	: Ctrl+P
+    Title   	: $$LocaleString:"Pay Heads"
+    Action  	: Set : AccountType : $$SysName:PayHeads
+    Inactive	: $$IsSysNameEqual:PayHeads:##AccountType
+
+[Key: AL Budget]
+
+    Key     : Ctrl+U
+    Title   : $$LocaleString:"Budgets & Scenarios"
+    Action  : Set : AccountType : $$SysName:BudgetScenarios
+    Inactive: $$IsSysNameEqual:BudgetScenarios:##AccountType ;OR (NOT @@BdgtEnabled AND NOT @@ScnEnabled)
+
+[Key: AL CstCat]
+
+    Key     : Ctrl+S
+    Title   : $$LocaleString:"Cost Category"
+    Action  : Set : AccountType : $$SysName:CostCategories
+    Inactive: $$IsSysNameEqual:CostCategories:##AccountType ;OR NOT $$IsCostCategoryOn:$$CurrentCompany
+
+[Key: AL CstCtr]
+
+    Key     : Ctrl+C
+    Title   : $$LocaleString:"Cost Centres"
+    Action  : Set : AccountType : $$SysName:CostCentres
+    Inactive: $$IsSysNameEqual:CostCentres:##AccountType OR NOT $$IsCostCentresOn:$$CurrentCompany
+
+[Key: AL EmployeeGroup]
+
+    Key     : Ctrl + R
+    Title   : $$LocaleString:"Employee Groups"
+    Action  : Set : AccountType :$$SysName:EmployeeGroups
+    Inactive: $$IsSysNameEqual:EmployeeGroups:##AccountType OR (NOT ($$AddOnInfo:PayrollEnabled)) +
+				OR NOT $$IsPayrollOn:$$CurrentCompany OR NOT $$Allow:Display:PayrollMasters
+
+[Key: AL Employee]
+
+    Key     : Ctrl+Y
+    Title   : $$LocaleString:"Employees"
+    Action  : Set : AccountType : $$SysName:Employees
+    Inactive: $$IsSysNameEqual:Employees:##AccountType OR (NOT ($$AddOnInfo:PayrollEnabled)) +
+				OR NOT $$IsPayrollOn:$$CurrentCompany OR NOT $$Allow:Display:PayrollMasters
+
+[Key: AL Godown]
+
+    Key     : Ctrl+O
+    Title   : @@GdwnsTitle
+    Action  : Set : AccountType : $$SysName:Godowns
+    Inactive: $$IsSysNameEqual:Godowns:##AccountType
+
+[Key: AL Stock Groups]
+
+    Key     : Ctrl+T
+    Title   : $$LocaleString:"Stock Groups"
+    Action  : Set : AccountType : $$SysName:StockGroups
+    Inactive: $$IsSysNameEqual:StockGroups:##AccountType
+
+[Key: AL Stock Categories]
+
+    Key     : Ctrl+K
+    Title   : $$LocaleString:"Stock Categories"
+    Action  : Set : AccountType : $$SysName:StockCategories
+    Inactive: $$IsSysNameEqual:StockCategories:##AccountType
+
+[Key: AL Stock Items]
+
+    Key     : Ctrl+I
+    Title   : $$LocaleString:"Stock Items"
+    Action  : Set : AccountType : $$SysName:StockItems
+    Inactive: $$IsSysNameEqual:StockItems:##AccountType
+
+[Key: AL Currency]
+
+    Key     : Ctrl+E
+    Title   : $$LocaleString:"Currencies"
+    Action  : Set : AccountType : $$SysName:Currencies
+    Inactive: $$IsSysNameEqual:Currencies:##AccountType
+
+[Key: AL Unit]
+
+    Key     : Alt+N ;Ctrl+U
+    Title   : $$LocaleString:"Units"
+    Action  : Set : AccountType : $$SysName:Units
+    Inactive: $$IsSysNameEqual:Units:##AccountType
+
+[Key: AL Voucher Type]
+
+    Key     : Ctrl+V
+    Title   : $$LocaleString:"Voucher Types"
+    Action  : Set : AccountType : $$SysName:VoucherTypes
+    Inactive: $$IsSysNameEqual:VoucherTypes:##AccountType
+
+[Key: AL Attd Type]
+
+    Key     : Ctrl+A
+    Title   : $$LocaleString:"Attnd/Prod Types"
+    Action  : Set : AccountType : $$SysName:AttendanceTypes
+    Inactive: $$IsSysNameEqual:AttendanceTypes:##AccountType OR NOT ($$AddOnInfo:PayrollEnabled) +
+				OR NOT $$IsPayrollOn:$$CurrentCompany OR NOT $$Allow:Display:PayrollMasters
+
+[Button: AL Configure]
+
+	Use			: Right Button Template
+	Key			: F12
+	Title		: $$LocaleString:"Configure"
+	Action		: Execute : CoA Config
+	
+[Button: AL Other master]
+
+	Use			: Right Button Template
+	Key			: F10
+	Title		: $$LocaleString:"Other Masters"
+	Action		: Execute	: CoA Other Masters
+
+[Button: AL Create Group]
+
+	Use		: Right Button Template
+    Key     : Alt+R
+	Title	: $$LocaleString:"Create Group"
+    Action  : Create : Group
+
+[Button: AL Create CostCategory]
+
+	Use		: Right Button Template
+    Key     : Alt+R
+	Title	: $$LocaleString:"Create Category"
+    Action  : Create : Cost Category
+
+[Button: AL Create StkGroup]
+
+	Use		: Right Button Template
+    Key     : Alt+R
+	Title	: $$LocaleString:"Create Stock Group"
+    Action  : Create : Stock Group
+	Inactive: ##IsItemWise
+	
+[Key: AL Create Employee Group]
+
+	Use		: Right Button Template
+	Key     : Alt+R
+	Title	: $$LocaleString:"Create Employee Group"
+    Action  : Create : Employee Group
+
+[Key: AL Create Employee Category]
+
+	Use		: Right Button Template
+	Key     : Alt+R
+	Title	: $$LocaleString:"Create Employee Category"
+    Action  : Create : Employee Category
+
+[Button: AL Exceptions]
+	
+	Use		: Exceptions
+	;;Please use GotoReport action for exceptions
+	Action	: Change View	: AL Exception Report	: DisplayAction
+
+[Button: AL ChangeView] 
+
+	Use			: ChangeView
+	Action  	: Change View	: AL Change View : DisplayAction
+	Inactive	: @@IsChangeViewDisabled AND (NOT ($$IsSysNameEqual:Ledgers:##AccountType OR $$IsSysNameEqual:StockItems:##AccountType))
+
+[Button: AL MultiMasters] 
+
+	Use			: Right Button Template
+	Title		: @@MultiMasters
+	Key			: Alt + H
+	Action  	: Change View	: AL MultiMasters : DisplayAction
+	Inactive	: @@IsMSTbudget OR @@IsMSTScenario OR $$IsSysNameEqual:VoucherTypes:##AccountType OR $$IsSysNameEqual:Units:##AccountType OR $$IsSysNameEqual:PayHeads:##AccountType OR $$IsSysNameEqual:AttendanceTypes:##AccountType
+
+[Button: ALVTYPCreateSeries]
+
+	Use			: Right Button Template
+	Title		: $$LocaleString:"Create Vch No. Series"
+	Key			: Alt + S
+	Action  	: Call	: ALVTYPCreateSeries
+	Inactive	: NOT $$IsSysNameEqual:VoucherTypes:##AccountType OR @@IsCAEmptyListofVchTypes
+
+[Button: AL Ledger F5]
+
+	Use			: Right Button Template	
+	Key			: F5
+	Title		: If ##IsLedgerWise Then $$LocaleString:"Group View" Else $$LocaleString:"Ledger View"
+	Modifier Key: Toggle Explode
+	Action		: Call	: ListofAccountsLedgerWise
+
+[Button: AL Itemwise F5]
+
+	Use			: Right Button Template	
+	Key			: F5
+	Title		: If ##IsItemWise Then $$LocaleString:"Stock Group View" else $$LocaleString:"Stock Item View"
+	Modifier Key: Toggle Explode
+	Action		: Call	: ListofAccountsItemWise
+
+[Button: CoA Group]
+
+	Title       : $$LocaleString:"Group"
+	Use			: Right Button Template
+	Key         : F4
+
+	ActionEx	: MultiDisplay	: Alter : MGroup
+;    ActionEx  	: RejectForm 	: Form Query Reject
+
+[Button:  Multi Master Stock Item Group]
+
+    Title       : $$LocaleString:"Group"
+	Use			: Right Button Template
+	Key         : F4
+
+	Action		: Alter : MStockGroup
+
+[Button: Create AL Ledger]
+
+	Key     	: Alt+C
+
+	Action Ex	: Set Var1	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Ledger
+
+[Button: Create CA Ledger]
+
+	Key     	: Alt+C
+
+	Action Ex	: Set Var1	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Ledger
+
+[Button: Create AL PayHead]
+
+	Key     	: Alt+C
+
+	Action Ex	: Set Var1	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL PayHead
+
+[Button: Create AL Group]
+
+	Key     	: Alt+C
+	
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Group
+
+/* Stock Group creation from List of Accounts */
+[Button: Create AL Stock Group]
+
+	Key     	: Alt+C
+
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Stock Group
+
+/* Stock Items creation from List of Accounts */
+[Button: Create AL StockItem]
+
+	Key     	: Alt+C
+	
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL StockItem
+
+/* Cost Centre creation from List of Accounts */
+[Button: Create AL CostCentre]
+
+	Key     	: Alt + C
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL CostCentre
+
+/* Employee Group creation from List of Accounts */
+[Button: Create AL EmployeeGroup]
+
+	Key     	: Alt + C
+
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL EmployeeGroup
+
+/* Employee creation from List of Accounts */
+[Button: AL Create Employee]
+
+	Key     	: Alt + C
+	
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL All Employees
+	Inactive	: NOT $$AddOnInfo:PayrollEnabled
+
+[Key: Create AL Godown]
+
+	Key     	: Alt + C
+	
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Godown
+
+/* Stock Category creation from List of Accounts */
+[Key:  Create AL Stock Category]
+
+	Key     	: Alt+C
+	
+	Action Ex	: Set Var	: Set	: SVCurrRepItem		: $Name
+	Action Ex 	: MST Create: Create: AL Stock Category
+
+[Key: Line Click Create Master]
+
+	Use		: Create Master
+	Key     : Left Double Click
+
+[Key: Create Master]
+
+	Key			: Enter
+	
+	Switch  	: CreateAccType : CA Create Groups			: $$IsSysNameEqual:Groups:##AccountType
+	Switch  	: CreateAccType : CA Create Ledgers			: $$IsSysNameEqual:Ledgers:##AccountType
+	Switch  	: CreateAccType : CA Create StockItems     	: $$IsSysNameEqual:StockItems:##AccountType
+	Switch  	: CreateAccType : CA Create StockGroups    	: $$IsSysNameEqual:StockGroups:##AccountType
+	Switch  	: CreateAccType : AT Create PayHeads		: $$IsSysNameEqual:PayHeads:##AccountType
+	Switch  	: CreateAccType : AT Create CostCategories	: $$IsSysNameEqual:CostCategories:##AccountType
+	Switch  	: CreateAccType : AT Create CostCentres    	: $$IsSysNameEqual:CostCentres:##AccountType
+	Switch  	: CreateAccType : AT Create Employees      	: $$IsSysNameEqual:Employees:##AccountType
+	Switch  	: CreateAccType : AT Create EmployeeGroups 	: $$IsSysNameEqual:EmployeeGroups:##AccountType
+
+	Switch  	: AccTypeKey    : AT Create Budgets   	    : @@IsMSTBudget ;$$IsBudget AND NOT $IsScenario
+	Switch  	: AccTypeKey    : AT Create Scenarios   	: @@IsMSTScenario ;$$IsBudget  AND $IsScenario
+
+	Switch  	: CreateAccType : AT Create Godowns        	: $$IsSysNameEqual:Godowns:##AccountType OR  $$IsSysNameEqual:Locations:##AccountType
+	Switch  	: CreateAccType : AT Create StockCategories	: $$IsSysNameEqual:StockCategories:##AccountType
+
+	Switch  	: CreateAccType : AT Create Currencies     	: $$IsSysNameEqual:Currencies:##AccountType
+	Switch  	: CreateAccType : AT Create Units          	: $$IsSysNameEqual:Units:##AccountType
+
+	Switch  	: CreateAccType : AT Create VoucherTypes   	: $$IsSysNameEqual:VoucherTypes:##AccountType
+	Switch  	: CreateAccType : AT Create Attd Types     	: $$IsSysNameEqual:AttendanceTypes:##AccountType
+	Switch  	: CreateAccType : AT Create EmployeeCategory: @@IsMSTEmployeeCategory
+
+	[!Key: CA Create Groups]
+
+		Action : Create: Group
+
+	[!Key: CA Create Ledgers]
+
+		Action : Create: Ledger
+		
+	[!Key: CA Create StockItems]
+
+		Action : Create: StockItem
+
+	[!Key: CA Create StockGroups]
+
+		Action : Create: Stock Group
+
+	[!Key: AT Create PayHeads]
+
+		Action : Create: PayHead
+
+	[!Key: AT Create CostCentres]
+
+		Action : Create	: CostCentre
+
+	[!Key: AT Create Employees]
+
+		Action : Create	: All Employees
+
+	[!Key: AT Create EmployeeGroups]
+
+		Action  : Create : EmployeeGroup
+
+	[!Key: AT Create EmployeeCategory]
+
+		Action  : Create : EmployeeCategory
+
+[Key: DelMaster Enter]
+
+	Key     	: Enter
+	Action Ex	: Set Var1	: Set			: SVCurrRepItem		: $$Sprintf:"ID:%s":$MasterId
+	ActionEx	: MSTRpt1	: Display Ex	: DelMST EditLog VersionHistory
+    Mode    	: Display
+
+[Key: DelMaster AltEnter]
+
+	Use			: DelMasterEnter
+	Key			: Alt + Enter
+
+[Key: DelMaster CtrlEnter]
+
+	Use			: DelMasterEnter
+	Key			: Ctrl + Enter
+
+[Key: DelMaster LeftClick]
+
+	Use			: DelMasterEnter
+	Key			: Left Double Click
+
+[Key: AT Create DelGroups]
+
+	Key     	: Alt+C
+	Action  	: Create : Group
+
+[Key: AT Create DelLedgers]
+
+	Key     	: Alt+C
+	Action  	: Create : Ledger
+
+[Key: AT Create DelStockItems]
+
+	Key     	: Alt+C
+	Action  	: Create : StockItem
+
+;; End of File
