@@ -1,0 +1,144 @@
+;; Sri Ganeshji : Sri Balaji : Sri Pitreshwarji : Sri Durgaji : Sri Venkateshwara
+
+<DefType: Include>
+
+;;List of Accounts
+[Include: acclist\acclistbutton.tdl]
+[Include: acclist\acclistcoll.tdl]
+[Include: acclist\acclistfields.tdl]
+[Include: acclist\acclistfunc.tdl]
+[Include: acclist\acclistreport.tdl]
+[Include: acclist\acclistsysformulae.tdl]
+[Include: acclist\acclistvar.tdl]
+[Include: acclist\acclistobj.tdl]
+
+;; Accounting Reports Common
+[Include: acctscommon\accreportscommcoll.tdl]
+[Include: acctscommon\accreportscommconfig.tdl]
+[Include: acctscommon\accreportscommfields.tdl]
+[Include: acctscommon\accreportscommfunctions.tdl]
+[Include: acctscommon\accreportscommobjects.tdl]
+[Include: acctscommon\accreportscommreports.tdl]
+[Include: acctscommon\accreportscommsysformule.tdl]
+[Include: acctscommon\accreportscommvars.tdl]
+
+;; ChangeView
+[Include: acctscommon\changeview\accchangeviewobj.tdl]
+[Include: acctscommon\changeview\accchangeviewcoll.tdl]
+
+;; Exceptions
+[Include: acctscommon\exceptions\accexceptionsobj.tdl]
+[Include: acctscommon\exceptions\accexceptionscoll.tdl]
+
+;; Ledger Contact Details
+[Include: acctscommon\ledgercontact\ledgercontactcoll.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactconfig.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactfield.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactformula.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactobject.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactreport.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactformat.tdl]
+[Include: acctscommon\ledgercontact\ledgercontactvariables.tdl]
+
+
+;;Tally Audit Reports main
+/**
+ Tally Audit which enables the auditor to perform an audit or track changes that affect the integrity of a transaction,  
+ such as changes made to Date, Ledger Masters and Amounts in the Voucher are reflected in the Tally Audit Listings.  
+*/
+
+[Include: audit\auditcommoncoll.tdl]
+[Include: audit\auditcommonfields.tdl]
+[Include: audit\auditcommonreport.tdl]
+[Include: audit\auditcommonsysformulae.tdl]
+[Include: audit\auditcommonsysvar.tdl]
+
+[Include: audit\auditmstcoll.tdl]
+[Include: audit\auditmstfields.tdl]
+[Include: audit\auditmstreport.tdl]
+[Include: audit\auditmstsysformulae.tdl]
+[Include: audit\auditmstsysvar.tdl]
+
+[Include: audit\auditusercoll.tdl]
+[Include: audit\audituserfields.tdl]
+[Include: audit\audituserobjects.tdl]
+[Include: audit\audituserreport.tdl]
+[Include: audit\auditusersysformulae.tdl]
+
+[Include: audit\auditvchtypecoll.tdl]
+[Include: audit\auditvchtypereport.tdl]
+[Include: audit\auditvchtypesysformulae.tdl]
+
+;;Balance Sheet
+[Include: balancesheet\balancesheetcoll.tdl]
+[Include: balancesheet\balancesheetfields.tdl]
+[Include: balancesheet\balancesheetobjects.tdl]
+[Include: balancesheet\balancesheetreport.tdl]
+[Include: balancesheet\balancesheetsysformulae.tdl]
+[Include: balancesheet\balancesheetsysvar.tdl]
+
+;; Group Payment Performance
+[Include: grouppaymentperformance\gppcoll.tdl]
+[Include: grouppaymentperformance\gppfields.tdl]
+[Include: grouppaymentperformance\gppreports.tdl]
+
+;; Ledger Payment Performance Report
+[Include: ledgerpaymentperformance\lppcoll.tdl]
+[Include: ledgerpaymentperformance\lppconfig.tdl]
+[Include: ledgerpaymentperformance\lppfields.tdl]
+[Include: ledgerpaymentperformance\lppformula.tdl]
+[Include: ledgerpaymentperformance\lppreport.tdl]
+
+;;Multi Account Printing - Multi column Cash/Bank book
+[Include: multiaccprint\multicash\multicashcoll.tdl]
+[Include: multiaccprint\multicash\multicashfields.tdl]
+[Include: multiaccprint\multicash\multicashobjects.tdl]
+[Include: multiaccprint\multicash\multicashreports.tdl]
+[Include: multiaccprint\multicash\multicashsysformulae.tdl]
+[Include: multiaccprint\multicash\multicashvars.tdl]
+
+;;Outstanding
+[Include: outstanding\accrepoutstandingmain.tdl]
+
+;;Page Index
+[Include: pageindex\pageindexfields.tdl]
+[Include: pageindex\pageindexfunctions.tdl]
+[Include: pageindex\pageindexreport.tdl]
+[Include: pageindex\pageindexsysformulae.tdl]
+
+;; Profit and Loss
+[Include: profitandloss\pandlcoll.tdl]
+[Include: profitandloss\pandlsysformulas.tdl]
+[Include: profitandloss\pandlfields.tdl]
+[Include: profitandloss\pandlobjects.tdl]
+[Include: profitandloss\pandlreports.tdl]
+
+;;Statistics
+[Include: statistics\statisticscoll.tdl]
+[Include: statistics\statisticsobjects.tdl]
+[Include: statistics\statisticsreport.tdl]
+[Include: statistics\statisticsfields.tdl]
+[Include: statistics\statisticsvar.tdl]
+[Include: statistics\statisticssysformulae.tdl]
+
+;;Summary
+[Include: summary\accreportsumm.tdl]
+
+;;Templates
+[Include: templates\accreportstmplreports.tdl]
+
+;;Voucher Reports
+[Include: voucherreports\voucherreportsmain.tdl]
+
+;;Configuration
+[Include: landingpages\accountingregister.tdl]
+[Include: landingpages\financialreports.tdl]
+[Include: landingpages\voucherreports.tdl]
+[Include: landingpages\costcentre.tdl]
+[Include: landingpages\auditreport.tdl]
+[Include: landingpages\acclandingpagecoll.tdl]
+[Include: landingpages\acclandingpagevar.tdl]
+[Include: landingpages\acclandingpagefields.tdl]
+
+
+;; End of File
